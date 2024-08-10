@@ -59,6 +59,16 @@ impl GrauxConfig {
             Box::new(graux_provider)
         }
     }
+
+    pub async fn get_websocket_provider(&mut self) -> Box<dyn GrauxWebSocketProvider> {
+        if let Some(provider) = &self.base_graux_wss_provider {
+            provider.clone()
+        } else {
+            let graux_wss_provider = graux_websocket_provider::GrauxWebSocketProvider::new(self).await;
+            self.base_graux_wss_provider = Some(Box::new(graux_wss_provider.clone()));
+            Box::new(graux_wss_provider)
+        }
+    }
 }
 
 Please note that the GrauxProvider and GrauxWebSocketProvider structs and their implementations 
